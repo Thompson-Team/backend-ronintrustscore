@@ -1,41 +1,46 @@
+import { ethers } from 'ethers';
+
+/**
+ * Verifica la firma de un mensaje usando ethers.js
+ */
 export const verifySignature = async (
-  address: string, 
-  signature: string
+  address: string,
+  signature: string,
+  message?: string
 ): Promise<boolean> => {
-  // TODO: Implementar verificación real de firma
-  // Por ahora retornamos true si hay address y signature
-  console.log('Verifying signature for:', address);
-  return address.length > 0 && signature.length > 0;
+  try {
+    // Si no se proporciona mensaje, crear uno genérico
+    const messageToVerify = message || `Sign this message to verify your identity.\n\nWallet: ${address}`;
+
+    // Recuperar la dirección desde la firma
+    const recoveredAddress = ethers.verifyMessage(messageToVerify, signature);
+
+    // Comparar direcciones (case-insensitive)
+    const isValid = recoveredAddress.toLowerCase() === address.toLowerCase();
+
+    console.log('Signature verification:', {
+      provided: address,
+      recovered: recoveredAddress,
+      valid: isValid
+    });
+
+    return isValid;
+  } catch (error) {
+    console.error('Error verifying signature:', error);
+    return false;
+  }
 };
 
-// src/services/aiService.ts
-interface AIAnalysisResult {
-  overallScore: number;
-  breakdown: {
-    trustworthiness: number;
-    security: number;
-    experience: number;
-    behavior: number;
-  };
-}
+/**
+ * Verifica que la dirección sea válida
+ */
+export const isValidAddress = (address: string): boolean => {
+  return ethers.isAddress(address);
+};
 
-export const analyzeWithAI = async (
-  answers: Record<string, any>
-): Promise<AIAnalysisResult> => {
-  // TODO: Integrar con microservicio Python de IA
-  // Por ahora retornamos análisis mock
-  console.log('Analyzing answers with AI:', answers);
-
-  // Simular procesamiento
-  await new Promise(resolve => setTimeout(resolve, 1000));
-
-  return {
-    overallScore: Math.floor(Math.random() * 30) + 70,
-    breakdown: {
-      trustworthiness: Math.floor(Math.random() * 30) + 70,
-      security: Math.floor(Math.random() * 30) + 70,
-      experience: Math.floor(Math.random() * 30) + 70,
-      behavior: Math.floor(Math.random() * 30) + 70
-    }
-  };
+/**
+ * Normaliza una dirección a checksum format
+ */
+export const normalizeAddress = (address: string): string => {
+  return ethers.getAddress(address);
 };

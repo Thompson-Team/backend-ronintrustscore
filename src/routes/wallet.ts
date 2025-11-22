@@ -1,5 +1,5 @@
 import { Router, Request, Response } from 'express';
-import { verifySignature } from '../services/walletService';
+import { verifySignature, isValidAddress } from '../services/walletService';
 import { generateToken } from '../utils/jwt';
 
 const router = Router();
@@ -18,7 +18,14 @@ router.post('/connect', async (req: Request, res: Response) => {
       });
     }
 
-    // Verificar firma (hardcodeado por ahora)
+    // Validar formato de dirección
+    if (!isValidAddress(address)) {
+      return res.status(400).json({ 
+        error: 'Invalid Ethereum address format' 
+      });
+    }
+
+    // Verificar firma
     const isValid = await verifySignature(address, signature);
 
     if (!isValid) {
@@ -30,13 +37,39 @@ router.post('/connect', async (req: Request, res: Response) => {
     // Generar JWT token
     const token = generateToken(address);
 
+    console.log('✅ Wallet connected:', address);
+
     res.json({ 
       token,
-      message: 'Wallet connected successfully' 
+      message: 'Wallet connected successfully',
+      address
     });
   } catch (error) {
     console.error('Error connecting wallet:', error);
     res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+/**
+ * GET /api/wallet/verify
+ * Verifica un token JWT
+ */
+router.get('/verify', async (req: Request, res: Response) => {
+  try {
+    const token = req.headers.authorization?.replace('Bearer ', '');
+
+    if (!token) {
+      return res.status(401).json({ error: 'No token provided' });
+    }
+
+    const decoded = require('../utils/jwt').verifyToken(token);
+
+    res.json({ 
+      valid: true,
+      address: decoded.walletAddress 
+    });
+  } catch (error) {
+    res.status(401).json({ error: 'Invalid token' });
   }
 });
 

@@ -1,12 +1,15 @@
+import path from "path";
+import dotenv from "dotenv";
+
+dotenv.config({ path: path.resolve(__dirname, "..", ".env.dev") });
+
 import express, { Request, Response } from 'express';
 import cors from 'cors';
-import dotenv from 'dotenv';
 import walletRoutes from './routes/wallet';
 import questionnaireRoutes from './routes/questionnaire';
 import blockchainRoutes from './routes/blockchain';
 import vlayerRoutes from './routes/vlayer';
 
-dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 3000;
