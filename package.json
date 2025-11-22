@@ -1,15 +1,20 @@
 {
-  "name": "reputation-oracle-backend",
+  "name": "reputation-oracle",
   "version": "1.0.0",
-  "description": "Backend for Ronin Reputation Oracle",
+  "description": "Smart contracts and backend for Ronin Reputation Oracle",
   "main": "dist/index.js",
   "scripts": {
+    "compile": "hardhat compile",
+    "test": "hardhat test && jest",
+    "deploy:testnet": "hardhat run scripts/deploy.ts --network saigon",
+    "deploy:mainnet": "hardhat run scripts/deploy.ts --network ronin",
+    "node": "hardhat node",
     "dev": "nodemon --exec ts-node src/index.ts",
     "build": "tsc",
-    "start": "node dist/index.js",
-    "test": "jest"
+    "start": "node dist/index.js"
   },
   "dependencies": {
+    "@openzeppelin/contracts": "^5.0.1",
     "axios": "^1.6.0",
     "cors": "^2.8.5",
     "dotenv": "^16.3.1",
@@ -18,12 +23,15 @@
     "jsonwebtoken": "^9.0.2"
   },
   "devDependencies": {
+    "@nomicfoundation/hardhat-toolbox": "^4.0.0",
     "@types/cors": "^2.8.17",
     "@types/express": "^4.17.21",
     "@types/jsonwebtoken": "^9.0.5",
-    "@types/node": "^20.10.0",
+    "ethers": "^6.15.0",
+    "@types/node": "^20.19.25",
+    "hardhat": "^2.27.0",
     "nodemon": "^3.0.2",
     "ts-node": "^10.9.2",
-    "typescript": "^5.3.3"
+    "typescript": "^5.9.3"
   }
 }

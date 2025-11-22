@@ -37,7 +37,7 @@ router.post('/connect', async (req: Request, res: Response) => {
     // Generar JWT token
     const token = generateToken(address);
 
-    console.log('✅ Wallet connected:', address);
+    console.log('Wallet connected:', address);
 
     res.json({ 
       token,
