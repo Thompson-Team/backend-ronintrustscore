@@ -1,3 +1,4 @@
+
 import axios from 'axios';
 import { ethers } from 'ethers';
 
@@ -149,4 +150,3 @@ export const verifyGoogleVouch = async (
     zkProof: 'zk_proof_' + Math.random().toString(36).substring(7)
   };
 };
-export {};
