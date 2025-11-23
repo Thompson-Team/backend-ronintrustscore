@@ -9,7 +9,6 @@ import walletRoutes from './routes/wallet';
 import questionnaireRoutes from './routes/questionnaire';
 import blockchainRoutes from './routes/blockchain';
 import vlayerRoutes from './routes/vlayer';
-import testRoutes from './routes/test';
 
 
 const app = express();
@@ -25,7 +24,6 @@ app.use('/api/wallet', walletRoutes);
 app.use('/api/questionnaire', questionnaireRoutes);
 app.use('/api/blockchain', blockchainRoutes);
 app.use('/api/vlayer', vlayerRoutes);
-app.use('/api/test', testRoutes);
 
 // Health check
 app.get('/health', (req: Request, res: Response) => {

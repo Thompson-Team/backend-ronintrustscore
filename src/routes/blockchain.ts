@@ -1,5 +1,5 @@
 import { Router, Request, Response } from 'express';
-import { publishToRonin, getScoreFromChain } from '../services/blockchainService';
+import { publishToRonin } from '../services/blockchainService';
 
 const router = Router();
 
@@ -27,29 +27,6 @@ router.post('/publish-score', async (req: Request, res: Response) => {
   } catch (error) {
     console.error('Error publishing score:', error);
     res.status(500).json({ error: 'Failed to publish score' });
-  }
-});
-
-/**
- * GET /api/blockchain/score/:address
- * Obtiene score de una wallet desde blockchain
- */
-router.get('/score/:address', async (req: Request, res: Response) => {
-  try {
-    const { address } = req.params;
-
-    const score = await getScoreFromChain(address);
-
-    if (!score) {
-      return res.status(404).json({ 
-        error: 'No score found for this address' 
-      });
-    }
-
-    res.json(score);
-  } catch (error) {
-    console.error('Error fetching score:', error);
-    res.status(500).json({ error: 'Failed to fetch score' });
   }
 });
 
