@@ -17,7 +17,7 @@
   "dependencies": {
     "@openzeppelin/contracts": "^5.0.1",
     "@vlayer/sdk": "^1.5.1-nightly-20251103-b84a901b51aac170c55042366a1bc2c2ae96148f",
-    "axios": "^1.6.0",
+    "axios": "^1.13.2",
     "cors": "^2.8.5",
     "dotenv": "^16.3.1",
     "ethers": "^6.15.0",

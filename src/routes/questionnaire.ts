@@ -2,8 +2,8 @@ import { Router, Request, Response } from 'express';
 import { analyzeWithAI } from '../services/aiService';
 import { storeQuestionnaireResponse } from '../services/storageService';
 import { generateAndVerifyProof } from '../services/vlayerWebProver';
-
-const router = Router();
+import express from 'express';
+const router = express.Router();
 
 interface QuestionnaireRequest {
   walletAddress: string;
@@ -34,7 +34,8 @@ router.post('/submit', async (req: Request, res: Response) => {
     await storeQuestionnaireResponse(walletAddress, answers);
 
     // 2️⃣ Analizar con IA
-    const aiAnalysis = await analyzeWithAI(answers);
+    const aiAnalysis = await analyzeWithAI(answers, walletAddress);
+
 
     // 3️⃣ Preparar datos para ZK proof
     const proofData = {
