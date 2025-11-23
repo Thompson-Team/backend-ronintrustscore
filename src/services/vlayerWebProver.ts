@@ -1,6 +1,5 @@
 import { ethers } from 'ethers';
 
-
 interface ReputationProofInput {
   walletAddress: string;
   score: number;
@@ -43,20 +42,41 @@ export const generateReputationProof = async (
   console.log('🔐 Step 1: Generating reputation proof...');
 
   try {
+    // ✅ VALIDACIÓN Y VALORES POR DEFECTO
+    const walletAddress = data.walletAddress || ethers.ZeroAddress;
+    const score = data.score ?? 0; // Use 0 if null/undefined
+    const timestamp = data.timestamp 
+      ? Math.floor(new Date(data.timestamp).getTime() / 1000)
+      : Math.floor(Date.now() / 1000);
+    
+    // Validar que los valores sean válidos
+    if (!ethers.isAddress(walletAddress)) {
+      throw new Error('Invalid wallet address');
+    }
+    
+    if (typeof score !== 'number' || score < 0 || score > 100) {
+      throw new Error(`Invalid score: ${score}. Must be between 0 and 100`);
+    }
+
     // Preparar datos del proof
     const proofInput = {
-      userAddress: data.walletAddress,
-      score: data.score,
-      timestamp: Math.floor(new Date(data.timestamp).getTime() / 1000),
-      breakdown: data.breakdown,
-      verifications: data.verifications
+      userAddress: walletAddress,
+      score: score,
+      timestamp: timestamp,
+      breakdown: data.breakdown || {
+        trustworthiness: 0,
+        security: 0,
+        experience: 0,
+        behavior: 0
+      },
+      verifications: data.verifications || {}
     };
 
     // Codificar public inputs según el formato esperado por el contrato
     // El contrato espera: (address, uint256, uint256)
     const publicInputs = ethers.AbiCoder.defaultAbiCoder().encode(
       ['address', 'uint256', 'uint256'],
-      [data.walletAddress, data.score, proofInput.timestamp]
+      [walletAddress, score, timestamp]
     );
 
     // Generar hash del proof basado en todos los datos
@@ -68,14 +88,14 @@ export const generateReputationProof = async (
     console.log('✅ Reputation proof generated');
     console.log('   Proof hash:', proof.substring(0, 20) + '...');
     console.log('   Public inputs length:', publicInputs.length);
-    console.log('   User address:', data.walletAddress);
-    console.log('   Score:', data.score);
-    console.log('   Timestamp:', proofInput.timestamp);
+    console.log('   User address:', walletAddress);
+    console.log('   Score:', score);
+    console.log('   Timestamp:', timestamp);
 
     return { proof, publicInputs };
   } catch (error) {
     console.error('Error generating reputation proof:', error);
-    throw new Error('Failed to generate reputation proof');
+    throw new Error(`Failed to generate reputation proof: ${error instanceof Error ? error.message : 'Unknown error'}`);
   }
 };
 
