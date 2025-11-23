@@ -9,7 +9,7 @@
     "resolveJsonModule": true,
     "outDir": "./dist",
     "rootDir": "./",
-    "typeRoots": ["./node_modules/@types"]
+    "typeRoots": ["./node_modules/@types", "./src/types"]
   },
   "include": [
     "scripts/**/*",
@@ -17,6 +17,6 @@
     "test/**/*",
     "hardhat.config.ts",
     "hardhat.d.ts"
-  ],
+, "contracts-project/scripts"  ],
   "exclude": ["node_modules", "cache", "dist"]
 }

@@ -1,12 +1,5 @@
 import { ethers } from 'ethers';
 
-/**
- * IMPORTANTE: vlayer NO tiene endpoints REST públicos
- * La arquitectura correcta es:
- * 1. Generar proof localmente con los datos
- * 2. El proof se verifica on-chain usando los smart contracts
- * 3. Los contratos Prover/Verifier de vlayer se ejecutan en el zkEVM
- */
 
 interface ReputationProofInput {
   walletAddress: string;
@@ -87,9 +80,7 @@ export const generateReputationProof = async (
 };
 
 /**
- * Step 2: "Comprimir" el proof (simulado)
- * En producción, esto se haría usando vlayer SDK en el browser o mediante el zkEVM
- * Por ahora, mantenemos el proof tal cual para desarrollo
+ * Step 2: "Comprimir" el proof 
  */
 export const compressWebProof = async (
   proof: string,
@@ -98,14 +89,12 @@ export const compressWebProof = async (
   console.log('📦 Step 2: Preparing proof for on-chain verification...');
 
   try {
-    // En desarrollo, el "proof comprimido" es el mismo proof
-    // En producción con vlayer, aquí se ejecutaría el Prover contract en zkEVM
     const webProof: VlayerWebProof = {
       proof: proof,
       publicInputs: publicInputs,
       proofId: 'proof_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9),
       verified: false,
-      compressed: false // Se marca como false porque es desarrollo
+      compressed: false
     };
 
     console.log('✅ Proof prepared for verification');
